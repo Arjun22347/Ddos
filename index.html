@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vernitiger Network - API</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00ffff; /* Cyan */
+            --secondary-color: #ff00ff; /* Magenta */
+            --background-dark: #0a0a14;
+            --background-medium: #1a1a2e;
+            --container-bg: rgba(15, 15, 30, 0.85);
+            --text-color: #e0e0e0;
+            --glow-color: rgba(0, 255, 255, 0.7);
+            --highlight-bg: rgba(0, 255, 255, 0.1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes subtleGlow {
+             0%, 100% { text-shadow: 0 0 3px var(--glow-color), 0 0 6px var(--glow-color); }
+             50% { text-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color); }
+        }
+
+        @keyframes pulseBorder {
+            0% { box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.3), inset 0 0 5px rgba(0, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 12px 4px rgba(0, 255, 255, 0.5), inset 0 0 8px rgba(0, 255, 255, 0.3); }
+            100% { box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.3), inset 0 0 5px rgba(0, 255, 255, 0.2); }
+        }
+
+         @keyframes scanline {
+             0% { transform: translateY(-100%); }
+             100% { transform: translateY(100%); }
+         }
+
+        body {
+            margin: 0;
+            padding: 20px; /* Add padding for breathing room */
+            font-family: 'Roboto Mono', monospace; /* Tech font */
+            background-color: var(--background-dark);
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at top left, rgba(0, 255, 255, 0.15), transparent 40%),
+                radial-gradient(circle at bottom right, rgba(255, 0, 255, 0.15), transparent 40%),
+                linear-gradient(135deg, var(--background-dark) 0%, var(--background-medium) 50%, var(--background-dark) 100%);
+            background-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%, 200% 200%; /* Control grid and gradient size */
+            background-position: 0 0, 0 0, 0 0, 0 0, 50% 50%;
+            animation: backgroundAnimation 30s ease infinite; /* Animate the main gradient */
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            position: relative; /* Needed for pseudo-elements */
+        }
+
+         /* Optional subtle scanline effect */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200%; /* Extend height for better looping */
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(0, 255, 255, 0.03) 50%, rgba(255,255,255,0) 100%);
+            opacity: 0.6;
+            pointer-events: none;
+            animation: scanline 15s linear infinite;
+            z-index: 1;
+        }
+
+        .container {
+            width: 90%; /* More responsive */
+            max-width: 500px; /* Max size */
+            height: auto;
+            background: var(--container-bg);
+            backdrop-filter: blur(5px); /* Subtle blur */
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 4px; /* Sharper edges */
+            border: 1px solid rgba(0, 255, 255, 0.3); /* Cyan border */
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            padding: 25px 30px;
+            position: relative;
+            overflow: hidden;
+            z-index: 2; /* Above body pseudo-elements */
+            animation: pulseBorder 5s ease-in-out infinite alternate; /* Add pulsing border */
+            margin-bottom: 20px; /* Add margin below container */
+        }
+
+        /* Futuristic corner elements */
+        .container::before, .container::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--primary-color);
+            border-style: solid;
+            opacity: 0.8;
+            z-index: 3; /* Ensure corners are on top */
+        }
+        .container::before {
+            top: -2px; left: -2px;
+            border-width: 2px 0 0 2px;
+            border-top-left-radius: 4px; /* Match container radius */
+        }
+        .container::after {
+            bottom: -2px; right: -2px;
+            border-width: 0 2px 2px 0;
+            border-bottom-right-radius: 4px; /* Match container radius */
+        }
+
+
+        .container h1 {
+            font-family: 'Orbitron', sans-serif; /* Title font */
+            color: var(--primary-color);
+            font-size: 2rem; /* Adjusted size */
+            text-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color), 0 0 2px #fff;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            /* animation: subtleGlow 4s ease-in-out infinite; */ /* Optional title glow */
+        }
+
+        /* Style for the original label div */
+        .methods-label-container { /* Added class */
+            font-size: 1.1rem; /* Adjusted size */
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 3px var(--glow-color);
+            margin-bottom: 10px;
+            text-align: left; /* Align label left */
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .methods-list {
+            max-height: 200px; /* Adjusted height */
+            overflow-y: auto;
+            text-align: left;
+            color: var(--text-color);
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2); /* Darker list background */
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 5px; /* Space below label */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) rgba(0, 0, 0, 0.3);
+        }
+
+        /* Webkit scrollbar */
+        .methods-list::-webkit-scrollbar { width: 8px; }
+        .methods-list::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); border-radius: 4px;}
+        .methods-list::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; border: 1px solid var(--background-dark); }
+
+
+        .methods-list ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .methods-list h3 { /* Style layer headers */
+             font-size: 0.9rem;
+             color: var(--secondary-color); /* Magenta for headers */
+             text-transform: uppercase;
+             letter-spacing: 1px;
+             margin-top: 10px;
+             margin-bottom: 5px;
+             padding-left: 5px;
+             border-left: 3px solid var(--secondary-color);
+        }
+         .methods-list h3:first-of-type { /* Correct selector */
+             margin-top: 0;
+         }
+
+
+        .methods-list li {
+            margin: 4px 0;
+            background: transparent; /* Remove individual background */
+            border-radius: 0; /* Remove radius */
+            padding: 4px 8px;
+            font-size: 0.9rem;
+            transition: background 0.2s ease, color 0.2s ease;
+            cursor: default; /* Indicate non-interactive text */
+            color: #b0c4de; /* Lighter Steel Blue */
+            word-break: break-word; /* Prevent long words overflowing */
+        }
+
+        .methods-list li::before { /* Add list bullet */
+            content: "> ";
+            color: var(--primary-color);
+            opacity: 0.7;
+            margin-right: 5px;
+        }
+
+        .methods-list li:hover {
+            background: var(--highlight-bg);
+            color: #ffffff;
+        }
+
+         /* Specific styles for status text in list */
+         .methods-list li span.status-text { /* Added class */
+             font-style: italic;
+             opacity: 0.7;
+             color: #a0a0a0; /* Greyish */
+         }
+         .methods-list li span.vip-text { /* Added class */
+             font-style: normal;
+             font-weight: bold;
+             opacity: 1;
+             color: #ffd700; /* Gold for VIP */
+             text-shadow: 0 0 3px rgba(255, 215, 0, 0.5);
+         }
+
+
+        /* Style for the original link container div */
+        .api-link-container { /* Added class */
+            margin-top: 30px;
+            /* Removed absolute positioning to let it flow naturally */
+            text-align: center;
+            padding-top: 20px; /* Add space above button */
+            border-top: 1px dashed rgba(0, 255, 255, 0.3); /* Separator line */
+        }
+
+        .api-button {
+            display: inline-block;
+            padding: 10px 25px;
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 3px; /* Sharper */
+            box-shadow: 0 0 8px var(--glow-color);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .api-button:hover {
+            background: var(--highlight-bg);
+            color: #ffffff;
+            box-shadow: 0 0 15px var(--glow-color), 0 0 20px var(--glow-color);
+            transform: translateY(-2px);
+        }
+        .api-button:active {
+             transform: translateY(0px);
+             box-shadow: 0 0 5px var(--glow-color);
+        }
+
+        /* Styling for the Status Labels (kept outside container as per original structure) */
+         .status-labels-wrapper { /* Added a wrapper for alignment */
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             gap: 8px; /* Spacing between labels */
+             margin-top: 15px; /* Space above the status block */
+             width: 100%; /* Take full width for centering */
+             max-width: 500px; /* Match container max-width */
+             z-index: 2;
+         }
+
+        .status-label { /* Added class */
+             font-size: 0.9rem;
+             color: var(--text-color);
+             background: rgba(15, 15, 30, 0.7);
+             padding: 5px 15px;
+            /* margin-top: 8px; Removed margin-top, using gap in wrapper */
+             border-radius: 3px;
+             border: 1px solid rgba(0, 255, 255, 0.2);
+             display: inline-block; /* Make them blocks */
+             text-align: center;
+             width: 90%; /* Make them take up wrapper width */
+             max-width: 250px; /* Set a max width for labels */
+             /* min-width: 150px; Removed min-width */
+             z-index: 2; /* Above body pseudo-elements */
+        }
+
+        .status-label.online::before { /* Visual indicator */
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #00ff00; /* Bright green */
+            border-radius: 50%;
+            margin-right: 8px;
+            box-shadow: 0 0 5px #00ff00;
+            vertical-align: middle;
+        }
+
+        /* Remove the empty label div */
+        .methods-label:empty {
+             display: none;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+             body {
+                 padding: 10px;
+                 overflow-x: hidden; /* Ensure no horizontal scroll on mobile */
+             }
+            .container {
+                padding: 20px;
+                max-width: 95%;
+            }
+            .container h1 {
+                font-size: 1.6rem;
+            }
+            .methods-label-container {
+                 font-size: 1rem;
+            }
+             .methods-list {
+                 max-height: 150px;
+             }
+            .methods-list li {
+                 font-size: 0.8rem;
+                 padding: 3px 6px;
+            }
+             .api-button {
+                 padding: 8px 20px;
+                 font-size: 0.9rem;
+             }
+             .status-labels-wrapper {
+                 max-width: 95%;
+             }
+             .status-label {
+                 font-size: 0.8rem;
+                 /* min-width: 120px; */
+                 max-width: 200px;
+                 padding: 4px 10px;
+                 width: 80%; /* Adjust width */
+             }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vernitiger Network API</h1>
+
+        <div class="methods-label-container">Methods Available</div>
+
+        <div class="methods-list">
+            <ul>
+                <h3>Layer 7 Methods</h3>
+                <ul>
+                    <li>BROWSER</li>
+                    <li>TLS</li>
+                    <li>VFLOOD</li>
+                    <li>FLASH</li>
+                    <li>MIXBILL</li>
+                    <li>HTTPS</li>
+                    <li>H2-VERN</li>
+                    <li>H2-JOUMA</li>
+                    <li>H2-FURY</li>
+                    <li>HOLD</li>
+                    <li>VERN-B</li>
+                </ul>
+                <h3>Layer 4 Methods</h3>
+                <ul>
+                    <li><span class="vip-text">UDP (VIP)</span></li> <li><span class="vip-text">TCP (VIP)</span></li></ul>
+            </ul>
+        </div>
+
+        <div class="api-link-container">
+            <a class="api-button" href="http://47.237.30.77:2906/start/attack?host=&port=&time=&method=&key=" target="_blank" rel="noopener noreferrer">Link API</a>
+        </div>
+    </div>
+
+     <div class="status-labels-wrapper">
+        <div class="methods-label"></div>
+        <div class="methods-label status-label online">Status API: Online</div>
+        <div class="methods-label status-label online">Layer-7: Online</div>
+        <div class="methods-label status-label online">Layer-4: Online</div>
+    </div>
+
+</body>
+</html>
